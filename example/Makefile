@@ -1,11 +1,14 @@
-gen: gen-server-grpc
-
-### Grpc server generation
-gen-server-grpc: .pre-gen-server-grpc .deps-grpc .gen-server-grpc
+gen: .pre-gen-server-grpc .deps-grpc .gen-server-grpc
 
 .pre-gen-server-grpc:
+	rm -rf pkg/
+	rm -rf pkg/docs
+	rm -rf pkg/docs/swaggers
+	rm -rf pkg/web
+
 	mkdir -p pkg/
 	mkdir -p pkg/docs
+	mkdir -p pkg/docs/swaggers
 	mkdir -p pkg/web
 
 .deps-grpc:
@@ -19,15 +22,14 @@ gen-server-grpc: .pre-gen-server-grpc .deps-grpc .gen-server-grpc
 	ln -sf $(GOPATH)/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.16.0/third_party/googleapis/google api/google
 	ln -sf $(GOPATH)/pkg/mod/github.com/envoyproxy/protoc-gen-validate@v1.0.2/validate api/validate
 
+
 .gen-server-grpc:
 	protoc \
+    	-I=./api/grpc \
     	-I=./api \
     	-I $(GOPATH)/bin \
-    	--openapiv2_out ./pkg/docs \
-	 	--openapiv2_opt logtostderr=true \
-    	--go-grpc_out=./pkg/ \
-    	--grpc-gateway_out=logtostderr=true:./pkg/ \
-    	--grpc-gateway-ts_out=./pkg/web \
-    	--go_out=./pkg/ \
-	    --validate_out="lang=go:./pkg" \
+    	--plugin=protoc-gen-docs=bin/protoc-gen-docs \
+    	--openapiv2_out=./pkg/docs/swaggers \
+    	--docs_out=./pkg/docs \
+    	--docs_opt base_path=/swagger/* \
     	./api/grpc/*.proto

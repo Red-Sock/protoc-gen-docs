@@ -1,12 +1,13 @@
 package request
 
 import (
+	"encoding/json"
 	"io"
 	"os"
 
 	errors "github.com/Red-Sock/trace-errors"
 	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	plugin "google.golang.org/protobuf/types/pluginpb"
 )
 
 func ReadFromStd() *plugin.CodeGeneratorRequest {
@@ -19,9 +20,22 @@ func Read(reader io.Reader) *plugin.CodeGeneratorRequest {
 		panic(errors.Wrap(err, "error reading request"))
 	}
 
-	req := &plugin.CodeGeneratorRequest{}
+	return Parse(content)
+}
 
-	err = proto.Unmarshal(content, req)
+func Parse(content []byte) *plugin.CodeGeneratorRequest {
+	req := &plugin.CodeGeneratorRequest{}
+	err := proto.Unmarshal(content, req)
+	if err != nil {
+		panic(err)
+	}
+
+	return req
+}
+
+func ParseJSON(content []byte) *plugin.CodeGeneratorRequest {
+	req := &plugin.CodeGeneratorRequest{}
+	err := json.Unmarshal(content, req)
 	if err != nil {
 		panic(err)
 	}

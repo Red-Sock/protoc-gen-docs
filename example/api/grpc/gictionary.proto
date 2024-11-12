@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package hello_world_api;
+package dictionary_api;
 
-option go_package = "/api";
+option go_package = "/dictionary";
 
 import "google/api/annotations.proto";
 
-service helloWorldAPI {
+service dictionaryAPI {
   rpc Version(Version.Request) returns (Version.Response) {
     option (google.api.http) = {
       get: "/api/version"
