@@ -1,0 +1,4 @@
+# RedSock config
+app_info:
+    name: github.com/Red-Sock/protoc-gen-docs
+    version: v0.0.1
