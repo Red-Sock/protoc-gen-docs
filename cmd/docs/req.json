@@ -2,7 +2,7 @@
   "file_to_generate": [
     "grpc/hello_world_api.proto"
   ],
-  "parameter": "logtostderr=true",
+  "parameter": "base_path=non_default_docs_path,swaggers_folder_path=/swagger/,swaggers_web_path=/swagger/",
   "proto_file": [
     {
       "name": "grpc/hello_world_api.proto",

@@ -10,12 +10,12 @@ import (
     swaggerui "github.com/Red-Sock/go-swagger-ui"
 )
 
-//go:embed all:swaggers
+//go:embed all:{{ .SwaggerFolder }}
 var swaggers embed.FS
 
 const (
     BasePath    = "/{{ .BasePath }}/"
-    swaggerPath = BasePath + "swaggers/"
+    swaggerPath = BasePath + "{{ .SwaggerWebPath }}/"
 )
 
 func Swagger() (p string, handler http.HandlerFunc) {
@@ -34,7 +34,7 @@ func Swagger() (p string, handler http.HandlerFunc) {
         swaggerui.WithShowExtensions(true),
     ))
 
-    stripped, err := fs.Sub(swaggers, "swaggers")
+    stripped, err := fs.Sub(swaggers, "{{ .SwaggerFolder }}")
     if err != nil {
         log.Fatal(err)
     }

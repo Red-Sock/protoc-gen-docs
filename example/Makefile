@@ -3,12 +3,12 @@ gen: .pre-gen-server-grpc .deps-grpc .gen-server-grpc
 .pre-gen-server-grpc:
 	rm -rf pkg/
 	rm -rf pkg/docs
-	rm -rf pkg/docs/swaggers
+	rm -rf pkg/docs/swagger
 	rm -rf pkg/web
 
 	mkdir -p pkg/
 	mkdir -p pkg/docs
-	mkdir -p pkg/docs/swaggers
+	mkdir -p pkg/docs/swagger
 	mkdir -p pkg/web
 
 .deps-grpc:
@@ -29,7 +29,10 @@ gen: .pre-gen-server-grpc .deps-grpc .gen-server-grpc
     	-I=./api \
     	-I $(GOPATH)/bin \
     	--plugin=protoc-gen-docs=bin/protoc-gen-docs \
-    	--openapiv2_out=./pkg/docs/swaggers \
+    	--openapiv2_out=./pkg/docs/swagger \
     	--docs_out=./pkg/docs \
-    	--docs_opt base_path=/swagger/* \
+    	--docs_opt base_path=non_default_docs_path \
+    	--docs_opt swaggers_folder_path=/swagger/ \
+    	--docs_opt swaggers_web_path=/swagger/ \
+    	--docs_opt tittle="My custom swagger 🤡" \
     	./api/grpc/*.proto

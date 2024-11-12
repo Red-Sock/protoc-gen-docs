@@ -30,8 +30,11 @@ func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 	swaggerUIHandler.Name = toolbox.ToPtr("/docs.swagger_ui.go")
 
 	genReq := doc_handler_template.SwaggerUIGenReq{
-		BasePath: p.Params.BasePath,
-		Specs:    make([]doc_handler_template.Spec, 0, len(p.Req.SourceFileDescriptors)),
+		BasePath:       p.Params.BasePath,
+		SwaggerWebPath: p.Params.SwaggerWebPath,
+		SwaggerFolder:  p.Params.SwaggerFolderPath,
+		Tittle:         p.Params.Title,
+		Specs:          make([]doc_handler_template.Spec, 0, len(p.Req.SourceFileDescriptors)),
 	}
 
 	for _, protoFile := range p.Req.SourceFileDescriptors {
@@ -46,7 +49,6 @@ func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 		genReq.Specs = append(genReq.Specs, spec)
 	}
 
-	genReq.Tittle = "Service Docs"
 	genReq.PrimarySpecName = genReq.Specs[0].Name
 
 	content, err := doc_handler_template.Generate(genReq)

@@ -10,12 +10,12 @@ import (
 	swaggerui "github.com/Red-Sock/go-swagger-ui"
 )
 
-//go:embed all:swaggers
+//go:embed all:swagger
 var swaggers embed.FS
 
 const (
-	BasePath    = "/docs/"
-	swaggerPath = BasePath + "swaggers/"
+	BasePath    = "/non_default_docs_path/"
+	swaggerPath = BasePath + "swagger/"
 )
 
 func Swagger() (p string, handler http.HandlerFunc) {
@@ -23,7 +23,7 @@ func Swagger() (p string, handler http.HandlerFunc) {
 
 	mux.Handle(BasePath, swaggerui.NewHandler(
 		swaggerui.WithBasePath(BasePath),
-		swaggerui.WithHTMLTitle("Service Docs"),
+		swaggerui.WithHTMLTitle("My custom swagger 🤡"),
 		swaggerui.WithSpecURLs("Gictionary",
 			[]swaggerui.SpecURL{
 				{
@@ -38,7 +38,7 @@ func Swagger() (p string, handler http.HandlerFunc) {
 		swaggerui.WithShowExtensions(true),
 	))
 
-	stripped, err := fs.Sub(swaggers, "swaggers")
+	stripped, err := fs.Sub(swaggers, "swagger")
 	if err != nil {
 		log.Fatal(err)
 	}

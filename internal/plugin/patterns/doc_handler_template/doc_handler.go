@@ -13,7 +13,9 @@ var byteTemplate string
 var swaggerHandleTemplate = template.Must(template.New("swagger_handle").Parse(byteTemplate))
 
 type SwaggerUIGenReq struct {
-	BasePath string
+	BasePath       string
+	SwaggerWebPath string
+	SwaggerFolder  string
 
 	Tittle          string
 	PrimarySpecName string
