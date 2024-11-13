@@ -31,11 +31,17 @@ This script will generate following folder structure
 ```
 
 ### docs_out
-Used for output folder **MUST** be one folder before yours swaggers folder
+Value **MUST** be parent folder for your `openapiv2_out`'s value
 
-if `docs_out` is set to `./pkg/docs` then your `openapiv2_out` **MUST** be set to something like `./pkg/docs/swaggers`
+if `docs_out` is set to `./pkg/docs` 
+then your `openapiv2_out` **MUST** be set to something like `./pkg/docs/swaggers`.
+Otherwise, protoc-gen-docs wouldn't be able to find swaggers 
 
-By default all `swagger.json` files hosted at `/docs/swaggers`, e.g. `localhost/docs/swaggers/hello_world_v1.swagger.json`
+By default all `swagger.json` files hosted at `/docs/swaggers`
+e.g. 
+```
+http://localhost/docs/swaggers/hello_world_v1.swagger.json
+```
 
 
 # Customization
