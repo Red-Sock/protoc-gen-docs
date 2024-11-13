@@ -27,8 +27,13 @@ func ParseInputParams(params string) InputParams {
 		SwaggerWebPath:    "swaggers",
 		Title:             "Swagger",
 	}
+
 	for _, param := range strings.Split(params, ",") {
-		paramName := param[:strings.Index(param, "=")]
+		separatorIdx := strings.Index(param, "=")
+		if separatorIdx == -1 {
+			continue
+		}
+		paramName := param[:separatorIdx]
 		paramValue := param[len(paramName)+1:]
 
 		switch paramName {
