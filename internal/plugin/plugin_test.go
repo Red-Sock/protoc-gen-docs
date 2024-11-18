@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"testing"
 
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/Red-Sock/protoc-gen-docs/internal/request"
 )
@@ -18,6 +18,6 @@ func TestPlugin(t *testing.T) {
 	println(1)
 }
 
-func getRequest() *plugin.CodeGeneratorRequest {
+func getRequest() *pluginpb.CodeGeneratorRequest {
 	return request.ParseJSON(genReq)
 }

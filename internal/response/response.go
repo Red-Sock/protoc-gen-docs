@@ -4,8 +4,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/golang/protobuf/proto"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/protobuf/proto"
+	plugin "google.golang.org/protobuf/types/pluginpb"
 )
 
 func WriteResponseToStd(resp *plugin.CodeGeneratorResponse) {

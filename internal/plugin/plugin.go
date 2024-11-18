@@ -5,7 +5,8 @@ import (
 	"unicode"
 
 	"github.com/Red-Sock/toolbox"
-	plugin "github.com/golang/protobuf/protoc-gen-go/plugin"
+	"google.golang.org/protobuf/proto"
+	plugin "google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/Red-Sock/protoc-gen-docs/internal/plugin/patterns/doc_handler_template"
 	"github.com/Red-Sock/protoc-gen-docs/internal/request"
@@ -19,6 +20,8 @@ type Plugin struct {
 func (p *Plugin) Generate() *plugin.CodeGeneratorResponse {
 	resp := &plugin.CodeGeneratorResponse{}
 
+	resp.SupportedFeatures = proto.Uint64(
+		uint64(plugin.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL))
 	resp.File = append(resp.File, p.generateHandlerParameter())
 
 	return resp

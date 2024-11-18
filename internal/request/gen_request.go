@@ -6,7 +6,7 @@ import (
 	"os"
 
 	errors "github.com/Red-Sock/trace-errors"
-	"github.com/golang/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 	plugin "google.golang.org/protobuf/types/pluginpb"
 )
 

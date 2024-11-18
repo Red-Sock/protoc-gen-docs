@@ -31,7 +31,7 @@ message Version{
   message Request{}
 
   message Response {
-    string version = 1;
+    optional string version = 1;
   }
 }
 
