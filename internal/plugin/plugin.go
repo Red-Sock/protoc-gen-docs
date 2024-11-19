@@ -44,6 +44,11 @@ func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 		protoName := protoFile.GetName()
 		protoName = protoName[:len(protoName)-len(".proto")]
 
+		li := strings.LastIndex(protoName, "/")
+		if li != -1 {
+			protoName = protoName[li+1:]
+		}
+
 		spec := doc_handler_template.Spec{
 			Name:     snakeToPascal(protoName),
 			FileName: protoName,
