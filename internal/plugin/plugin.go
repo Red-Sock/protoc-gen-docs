@@ -54,6 +54,11 @@ func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 
 	genReq.PrimarySpecName = genReq.Specs[0].Name
 
+	li := strings.LastIndex(genReq.PrimarySpecName, "/")
+	if li != -1 {
+		genReq.PrimarySpecName = genReq.PrimarySpecName[li+1:]
+	}
+
 	content, err := doc_handler_template.Generate(genReq)
 	if err != nil {
 		panic(err.Error())
