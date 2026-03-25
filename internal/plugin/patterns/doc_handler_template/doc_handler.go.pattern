@@ -1,4 +1,4 @@
-package docs
+package {{ .PackageName }}
 
 import (
     "embed"

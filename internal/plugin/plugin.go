@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -30,9 +31,35 @@ func (p *Plugin) Generate() *plugin.CodeGeneratorResponse {
 func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 	var swaggerUIHandler plugin.CodeGeneratorResponse_File
 
-	swaggerUIHandler.Name = toolbox.ToPtr("/docs.swagger_ui.go")
+	var packageName string
+	var outPath string
+
+	primaryFile := p.Req.SourceFileDescriptors[0]
+
+	if p.Params.SourceRelative {
+		outPath = filepath.Join(filepath.Dir(primaryFile.GetName()), p.Params.BasePath, "docs.swagger_ui.go")
+		packageName = filepath.Base(filepath.Dir(outPath))
+	} else {
+		goPkg := primaryFile.GetOptions().GetGoPackage()
+		if goPkg != "" {
+			if strings.Contains(goPkg, ";") {
+				pkgParts := strings.Split(goPkg, ";")
+				packageName = pkgParts[len(pkgParts)-1]
+				outPath = filepath.Join(pkgParts[0], p.Params.BasePath, "docs.swagger_ui.go")
+			} else {
+				packageName = filepath.Base(goPkg)
+				outPath = filepath.Join(goPkg, p.Params.BasePath, "docs.swagger_ui.go")
+			}
+		} else {
+			outPath = filepath.Join(p.Params.BasePath, "docs.swagger_ui.go")
+			packageName = "docs"
+		}
+	}
+
+	swaggerUIHandler.Name = proto.String(outPath)
 
 	genReq := doc_handler_template.SwaggerUIGenReq{
+		PackageName:    packageName,
 		BasePath:       p.Params.BasePath,
 		SwaggerWebPath: p.Params.SwaggerWebPath,
 		SwaggerFolder:  p.Params.SwaggerFolderPath,
