@@ -9,7 +9,6 @@ type InputParams struct {
 	SwaggerFolderPath string
 	SwaggerWebPath    string
 	Title             string
-	SourceRelative    bool
 }
 
 const (
@@ -19,7 +18,6 @@ const (
 	swaggerFolderPathOption = "swaggers_folder_path"
 	swaggerWebPathOption    = "swaggers_web_path"
 	tittleOption            = "tittle"
-	pathsOption             = "paths"
 )
 
 func ParseInputParams(params string) InputParams {
@@ -28,7 +26,6 @@ func ParseInputParams(params string) InputParams {
 		SwaggerFolderPath: "swaggers",
 		SwaggerWebPath:    "swaggers",
 		Title:             "Swagger",
-		SourceRelative:    false,
 	}
 
 	for _, param := range strings.Split(params, ",") {
@@ -48,10 +45,6 @@ func ParseInputParams(params string) InputParams {
 			ip.SwaggerWebPath = strings.TrimRight(strings.TrimLeft(paramValue, "/"), "/")
 		case tittleOption:
 			ip.Title = paramValue
-		case pathsOption:
-			if paramValue == "source_relative" {
-				ip.SourceRelative = true
-			}
 		}
 	}
 

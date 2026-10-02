@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"path/filepath"
 	"strings"
 	"unicode"
 
@@ -31,45 +30,24 @@ func (p *Plugin) Generate() *plugin.CodeGeneratorResponse {
 func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 	var swaggerUIHandler plugin.CodeGeneratorResponse_File
 
-	var packageName string
-	var outPath string
+	swaggerUIHandler.Name = toolbox.ToPtr("/docs.swagger_ui.go")
 
-	primaryFile := p.Req.SourceFileDescriptors[0]
-
-	if p.Params.SourceRelative {
-		outPath = filepath.Join(filepath.Dir(primaryFile.GetName()), p.Params.BasePath, "docs.swagger_ui.go")
-		packageName = filepath.Base(filepath.Dir(outPath))
-	} else {
-		goPkg := primaryFile.GetOptions().GetGoPackage()
-		if goPkg != "" {
-			if strings.Contains(goPkg, ";") {
-				pkgParts := strings.Split(goPkg, ";")
-				packageName = pkgParts[len(pkgParts)-1]
-				outPath = filepath.Join(pkgParts[0], p.Params.BasePath, "docs.swagger_ui.go")
-			} else {
-				packageName = filepath.Base(goPkg)
-				outPath = filepath.Join(goPkg, p.Params.BasePath, "docs.swagger_ui.go")
-			}
-		} else {
-			outPath = filepath.Join(p.Params.BasePath, "docs.swagger_ui.go")
-			packageName = "docs"
-		}
-	}
-
-	swaggerUIHandler.Name = proto.String(outPath)
+	// file_to_generate has carried the list of files being generated since the
+	// first protoc plugin ABI; source_file_descriptors is only populated by
+	// protoc >= v22, so relying on it panics under older toolchains (Debian's
+	// protobuf-compiler ships 3.21.x).
+	filesToGenerate := p.Req.GetFileToGenerate()
 
 	genReq := doc_handler_template.SwaggerUIGenReq{
-		PackageName:    packageName,
 		BasePath:       p.Params.BasePath,
 		SwaggerWebPath: p.Params.SwaggerWebPath,
 		SwaggerFolder:  p.Params.SwaggerFolderPath,
 		Tittle:         p.Params.Title,
-		Specs:          make([]doc_handler_template.Spec, 0, len(p.Req.SourceFileDescriptors)),
+		Specs:          make([]doc_handler_template.Spec, 0, len(filesToGenerate)),
 	}
 
-	for _, protoFile := range p.Req.SourceFileDescriptors {
-		protoName := protoFile.GetName()
-		protoName = protoName[:len(protoName)-len(".proto")]
+	for _, protoName := range filesToGenerate {
+		protoName = strings.TrimSuffix(protoName, ".proto")
 
 		li := strings.LastIndex(protoName, "/")
 		if li != -1 {
@@ -82,6 +60,10 @@ func (p *Plugin) generateHandlerParameter() *plugin.CodeGeneratorResponse_File {
 		}
 
 		genReq.Specs = append(genReq.Specs, spec)
+	}
+
+	if len(genReq.Specs) == 0 {
+		panic("protoc-gen-docs: nothing to generate, file_to_generate is empty")
 	}
 
 	genReq.PrimarySpecName = genReq.Specs[0].Name
