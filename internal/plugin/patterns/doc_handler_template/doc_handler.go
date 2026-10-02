@@ -3,6 +3,7 @@ package doc_handler_template
 import (
 	"bytes"
 	_ "embed"
+	"go/format"
 	"text/template"
 
 	errors "github.com/Red-Sock/trace-errors"
@@ -35,5 +36,10 @@ func Generate(req SwaggerUIGenReq) ([]byte, error) {
 		return nil, errors.Wrap(err, "error generating")
 	}
 
-	return buf.Bytes(), nil
+	formatted, err := format.Source(buf.Bytes())
+	if err != nil {
+		return nil, errors.Wrap(err, "error formatting generated source")
+	}
+
+	return formatted, nil
 }
