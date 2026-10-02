@@ -12,6 +12,7 @@ func TestParameters(t *testing.T) {
 		BasePath:          "non_default_docs_path",
 		SwaggerFolderPath: "swg",
 		SwaggerWebPath:    "swc",
+		Title:             "Swagger",
 	}
 	require.Equal(t, expected, ip)
 }
